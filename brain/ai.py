@@ -1,32 +1,28 @@
-from ollama import chat
+from brain.conversation import conversation
+from brain.prompts import build_messages
 
-SYSTEM_PROMPT = """
-Your name is JARVIS.
+from brain.llm_client import LLMClient
 
-Always speak in English.
+class AIManager:
 
-Be intelligent, professional, calm and concise.
+    def __init__(self):
 
-Address the user as Sir.
+        self.client = LLMClient()
 
-Never mention that you are an AI language model.
+    def ask(self, text):
 
-Answer naturally like JARVIS.
-"""
+        conversation.add("user", text)
 
-def ask(prompt):
-    response = chat(
-        model="llama3.2",
-        messages=[
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
+        messages = build_messages(
+            text,
+            conversation.history()
+        )
 
-    return response["message"]["content"]
+        response = self.client.ask(messages)
+
+        conversation.add(
+            "assistant",
+            response
+        )
+
+        return response

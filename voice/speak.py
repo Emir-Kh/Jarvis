@@ -2,7 +2,17 @@ import pyttsx3
 
 engine = pyttsx3.init()
 
-engine.setProperty("rate", 170)
+from config.settings import settings
+
+engine.setProperty(
+    "rate",
+    settings.get("voice_rate")
+)
+
+engine.setProperty(
+    "volume",
+    settings.get("voice_volume")
+)
 
 voices = engine.getProperty("voices")
 
